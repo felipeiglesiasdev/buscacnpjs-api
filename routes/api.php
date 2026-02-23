@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Middleware\InternalApiKey;
 use App\Http\Controllers\CnpjController;
 use App\Http\Controllers\CepController;
 use App\Http\Controllers\UfsGeralController;
@@ -13,7 +13,7 @@ use App\Http\Controllers\SearchController;
 // ROTAS DA API (VERSÃO 1)
 // BASE: /api/v1
 // =========================================================
-Route::prefix('v1')->group(function () {
+Route::middleware('v1')->group(function () {
 
     // =========================================================
     // HEALTHCHECK / TESTE RÁPIDO DA API
