@@ -21,7 +21,7 @@
      SIDEBAR PARA TELAS GRANDES (Desktop)
      ===================================== -->
 <!-- Aumentamos a largura de w-64 para w-80 -->
-<aside class="w-80 bg-[#222222] text-gray-300 flex flex-col justify-between shadow-2xl h-full hidden md:flex z-20">
+<aside class="w-70 bg-[#222222] text-gray-300 flex flex-col justify-between shadow-2xl h-full hidden md:flex z-20">
     
     <div>
         <!-- Logo -->

@@ -2,33 +2,32 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="font-bold text-2xl" style="color: #222222;">Chaves de API</h2>
-                <p class="text-sm text-gray-500 mt-1">Gerencie os tokens de acesso para os seus projetos e sites satélites.</p>
+                <h2 class="font-bold text-2xl text-gray-800">Chaves de API</h2>
+                <p class="text-sm text-gray-500 mt-1">Gerencie os tokens de acesso para seus projetos satélites consumirem a API.</p>
             </div>
         </div>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto space-y-8 pb-12">
+    <div class="max-w-7xl mx-auto space-y-6 py-8 px-4 sm:px-6 lg:px-8">
 
-        <!-- ALERTA DE NOVO TOKEN (SÓ APARECE QUANDO GERA UM NOVO) -->
         @if (session('successToken'))
-            <div class="bg-green-50 border-l-4 border-[#499F2D] p-6 rounded-r-xl shadow-sm mb-6 animate-fade-in-up">
+            <div class="bg-green-50 border border-green-200 p-6 rounded-2xl shadow-sm mb-6 animate-fade-in-up">
                 <div class="flex items-start">
-                    <div class="flex-shrink-0">
-                        <i class="bi bi-check-circle-fill text-[#499F2D] text-xl"></i>
+                    <div class="flex-shrink-0 mt-1">
+                        <i class="bi bi-shield-lock-fill text-green-600 text-2xl"></i>
                     </div>
-                    <div class="ml-4">
-                        <h3 class="text-lg font-bold text-green-800">Token Gerado com Sucesso!</h3>
+                    <div class="ml-4 w-full">
+                        <h3 class="text-lg font-bold text-green-900">Token Gerado com Sucesso!</h3>
                         <p class="text-sm text-green-700 mt-1">
-                            Copie o seu novo token de acesso pessoal agora. <strong>Por motivos de segurança, ele não será exibido novamente.</strong>
+                            Este é o seu token de acesso. <strong>Copie-o agora!</strong> O Laravel Sanctum criptografa as chaves no banco de dados, então você não poderá ver este token completo novamente.
                         </p>
                         
-                        <div class="mt-4 flex items-center gap-2">
-                            <code class="bg-white px-4 py-3 rounded-lg text-gray-800 font-mono text-sm border border-green-200 shadow-sm flex-1 select-all" id="newTokenValue">
+                        <div class="mt-4 flex flex-col sm:flex-row items-center gap-3 w-full">
+                            <code class="bg-white px-4 py-3 rounded-xl text-gray-800 font-mono text-sm border border-green-300 shadow-inner flex-1 select-all w-full break-all" id="newTokenValue">
                                 {{ session('successToken') }}
                             </code>
-                            <button onclick="copyToken()" class="bg-[#004EA5] hover:bg-[#003d82] text-white px-4 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2 shadow-sm" id="copyBtn">
-                                <i class="bi bi-clipboard"></i> Copiar
+                            <button onclick="copyToken()" class="w-full sm:w-auto bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-sm flex items-center justify-center gap-2" id="copyBtn">
+                                <i class="bi bi-clipboard"></i> Copiar Chave
                             </button>
                         </div>
                     </div>
@@ -40,104 +39,113 @@
                     var copyText = document.getElementById("newTokenValue").innerText.trim();
                     navigator.clipboard.writeText(copyText).then(function() {
                         var btn = document.getElementById("copyBtn");
-                        btn.innerHTML = '<i class="bi bi-check2"></i> Copiado!';
-                        btn.classList.replace('bg-[#004EA5]', 'bg-[#499F2D]');
+                        btn.innerHTML = '<i class="bi bi-check2-all text-lg"></i> Copiado!';
+                        btn.classList.replace('bg-green-700', 'bg-gray-800');
+                        btn.classList.replace('hover:bg-green-800', 'hover:bg-gray-900');
                         setTimeout(function() {
-                            btn.innerHTML = '<i class="bi bi-clipboard"></i> Copiar';
-                            btn.classList.replace('bg-[#499F2D]', 'bg-[#004EA5]');
+                            btn.innerHTML = '<i class="bi bi-clipboard"></i> Copiar Chave';
+                            btn.classList.replace('bg-gray-800', 'bg-green-700');
+                            btn.classList.replace('hover:bg-gray-900', 'hover:bg-green-800');
                         }, 3000);
                     });
                 }
             </script>
         @endif
 
-        <!-- MENSAGEM DE SUCESSO PADRÃO (EX: QUANDO DELETA) -->
         @if (session('status'))
-            <div class="bg-blue-50 border-l-4 border-[#004EA5] p-4 rounded-r-lg shadow-sm mb-6">
-                <div class="flex items-center">
-                    <i class="bi bi-info-circle-fill text-[#004EA5] text-lg mr-3"></i>
-                    <p class="text-sm text-blue-800 font-medium">{{ session('status') }}</p>
-                </div>
+            <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl shadow-sm mb-6 flex items-center">
+                <i class="bi bi-info-circle-fill text-blue-600 text-xl mr-3"></i>
+                <p class="text-sm text-blue-800 font-medium">{{ session('status') }}</p>
             </div>
         @endif
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- FORMULÁRIO DE CRIAÇÃO (ESQUERDA) -->
-            <div class="md:col-span-1">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-6">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2 mb-2">
-                        <i class="bi bi-plus-circle-fill text-[#004EA5]"></i> Novo Token
-                    </h3>
-                    <p class="text-xs text-gray-500 mb-6 leading-relaxed">
-                        Crie um token exclusivo para cada site ou projeto. Assim, se um projeto for comprometido, você revoga apenas a chave dele.
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-blue-100 p-2 rounded-lg">
+                            <i class="bi bi-plus-lg text-blue-600"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Nova Chave</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+                        Crie tokens exclusivos para cada aplicação que for consumir sua API.
                     </p>
 
                     <form method="POST" action="{{ route('tokens.store') }}">
                         @csrf
                         <div class="mb-5">
-                            <label for="token_name" class="block text-sm font-medium text-gray-700 mb-1">Nome do Projeto/Site</label>
+                            <label for="token_name" class="block text-sm font-semibold text-gray-700 mb-2">Identificação (Nome do Site)</label>
                             <input type="text" name="token_name" id="token_name" required 
-                                   class="w-full rounded-lg border-gray-300 focus:border-[#004EA5] focus:ring focus:ring-[#004EA5] focus:ring-opacity-20 transition-colors text-sm"
-                                   placeholder="Ex: Landing Page Advocacia">
+                                   class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-20 transition-all text-sm py-2.5"
+                                   placeholder="Ex: App Consultas">
                             @error('token_name')
-                                <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
+                                <span class="text-red-500 text-xs mt-2 block font-medium"><i class="bi bi-exclamation-triangle"></i> {{ $message }}</span>
                             @enderror
                         </div>
 
-                        <button type="submit" class="w-full flex items-center justify-center gap-2 bg-[#222222] hover:bg-[#004EA5] text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors shadow-sm">
-                            <i class="bi bi-key"></i> Gerar Chave de API
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-3 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg">
+                            Gerar Token de Acesso <i class="bi bi-arrow-right"></i>
                         </button>
                     </form>
                 </div>
             </div>
 
-            <!-- LISTAGEM DE TOKENS (DIREITA) -->
-            <div class="md:col-span-2">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-50 flex items-center justify-between">
-                        <h3 class="text-lg font-bold text-gray-800">Tokens Ativos</h3>
-                        <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full">{{ $tokens->count() }} chaves</span>
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                        <h3 class="text-base font-bold text-gray-800">Tokens Ativos</h3>
+                        <span class="bg-gray-200 text-gray-700 text-xs font-bold px-3 py-1.5 rounded-full">{{ $tokens->count() }} {{ $tokens->count() === 1 ? 'chave' : 'chaves' }}</span>
                     </div>
 
                     @if ($tokens->count() > 0)
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-600">
-                                <thead class="text-xs text-gray-400 bg-gray-50/50 uppercase tracking-wider">
+                                <thead class="text-xs text-gray-500 bg-gray-50/50 uppercase tracking-wider border-b border-gray-100">
                                     <tr>
-                                        <th class="px-6 py-4 font-semibold">Nome do Projeto</th>
-                                        <th class="px-6 py-4 font-semibold">Criado em</th>
+                                        <th class="px-6 py-4 font-semibold">Aplicação</th>
+                                        <th class="px-6 py-4 font-semibold">Prefixo</th>
                                         <th class="px-6 py-4 font-semibold">Último Uso</th>
-                                        <th class="px-6 py-4 text-right font-semibold">Ação</th>
+                                        <th class="px-6 py-4 text-right font-semibold">Ações</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-50">
+                                <tbody class="divide-y divide-gray-100">
                                     @foreach ($tokens as $token)
-                                        <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <tr class="hover:bg-gray-50/80 transition-colors">
                                             <td class="px-6 py-4">
                                                 <div class="flex items-center gap-3">
-                                                    <div class="h-8 w-8 rounded bg-blue-50 flex items-center justify-center text-[#004EA5]">
-                                                        <i class="bi bi-shield-check"></i>
+                                                    <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+                                                        <i class="bi bi-hdd-network"></i>
                                                     </div>
-                                                    <span class="font-bold text-gray-800">{{ $token->name }}</span>
+                                                    <div>
+                                                        <span class="font-bold text-gray-800 block">{{ $token->name }}</span>
+                                                        <span class="text-xs text-gray-400">Criado em {{ $token->created_at->format('d/m/Y') }}</span>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td class="px-6 py-4 text-gray-500">
-                                                {{ $token->created_at->format('d/m/Y') }}
+                                            <td class="px-6 py-4">
+                                                <code class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200">
+                                                    ID: {{ $token->id }}|********
+                                                </code>
                                             </td>
                                             <td class="px-6 py-4">
                                                 @if ($token->last_used_at)
-                                                    <span class="text-[#499F2D] font-medium"><i class="bi bi-clock-history"></i> {{ $token->last_used_at->diffForHumans() }}</span>
+                                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                                        <i class="bi bi-activity"></i> {{ $token->last_used_at->diffForHumans() }}
+                                                    </span>
                                                 @else
-                                                    <span class="text-gray-400 italic">Nunca usado</span>
+                                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                                                        Nunca usado
+                                                    </span>
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 text-right">
-                                                <form method="POST" action="{{ route('tokens.destroy', $token->id) }}" onsubmit="return confirm('Tem a certeza que deseja revogar o acesso do site: {{ $token->name }}? Esta ação cortará o acesso à API imediatamente e não pode ser desfeita.');">
+                                                <form method="POST" action="{{ route('tokens.destroy', $token->id) }}" onsubmit="return confirm('Revogar o acesso de {{ $token->name }}? Esta ação é irreversível.');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50" title="Revogar Token">
-                                                        <i class="bi bi-trash3-fill text-lg"></i>
+                                                    <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-xl hover:bg-red-50 focus:ring focus:ring-red-200" title="Revogar Token">
+                                                        <i class="bi bi-trash3 text-lg"></i>
                                                     </button>
                                                 </form>
                                             </td>
@@ -147,12 +155,12 @@
                             </table>
                         </div>
                     @else
-                        <div class="p-12 text-center">
-                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 text-gray-400 mb-4">
-                                <i class="bi bi-key text-2xl"></i>
+                        <div class="p-16 text-center">
+                            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-50 border border-gray-100 text-gray-300 mb-5">
+                                <i class="bi bi-key text-3xl"></i>
                             </div>
-                            <h4 class="text-lg font-bold text-gray-800">Nenhum token encontrado</h4>
-                            <p class="text-gray-500 mt-1 max-w-sm mx-auto text-sm">Você ainda não gerou nenhuma chave de API. Use o formulário ao lado para criar o acesso para o seu primeiro projeto.</p>
+                            <h4 class="text-lg font-bold text-gray-800">Nenhuma chave gerada</h4>
+                            <p class="text-gray-500 mt-2 max-w-xs mx-auto text-sm leading-relaxed">Você ainda não tem tokens ativos. Gere o primeiro ao lado para começar a usar a API.</p>
                         </div>
                     @endif
                 </div>
