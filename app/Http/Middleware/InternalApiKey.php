@@ -7,21 +7,16 @@ use Illuminate\Http\Request;
 
 class InternalApiKey
 {
-    // =========================================================
-    // VALIDAR API KEY PARA ROTAS INTERNAS
-    // HEADER: X-INTERNAL-KEY
-    // ENV: INTERNAL_API_KEY
-    // =========================================================
     public function handle(Request $request, Closure $next)
     {
-        $expected = env('INTERNAL_API_KEY');
-        $provided = $request->header('X-INTERNAL-KEY');
+        $headerKey = $request->header('X-API-KEY');
 
-        // =========================================================
-        // SE NÃO CONFIGURADO OU NÃO ENVIADO, BLOQUEIA
-        // =========================================================
-        if (!$expected || !$provided || !hash_equals($expected, $provided)) {
-            return response()->json(['error' => 'NÃO AUTORIZADO'], 401);
+        $allowedKeys = explode(',', env('INTERNAL_API_KEYS'));
+
+        if (!$headerKey || !in_array($headerKey, $allowedKeys)) {
+            return response()->json([
+                'error' => 'Unauthorized'
+            ], 401);
         }
 
         return $next($request);
